@@ -1,6 +1,10 @@
+// import mongoose from 'mongoose'
 const express = require("express");
+// const mongoose = require("mongoose");
 const app = express();
 const port = 3001;
+
+// const {db} = mongoose
 
 const products = [
   {
@@ -52,8 +56,18 @@ const products = [
     description:"This thing is probaby outdated already.  I hate Apple."
   }
   
-
 ]
+const users = [{
+  username: 'BezosAmazon',
+  password: 'QanonCabal',
+},
+{username: 'MAGA45',
+password: 'maga2024'},
+{username: 'yourMom',
+password: 'motherofyou'},
+]
+
+
 let cart = [];
 let balance = 2000;
 app.use(function(req,res,next){
@@ -70,12 +84,28 @@ app.use(function(req,res,next){
 //   req.cartItem = products[Math.floor(Math.random()*products.length)];
 //   next();
 // }
+app.post('/users', (req,res) => {
+  const newUser = {
+    username: req.body.username,
+    password: req.body.password
+  }
+  users.push(newUser);
+  res.send(users)
+})
+app.get('/users', (req,res) => {
+  res.send(users);
+})
 app.get('/', (req,res)=> {
   res.send(products)
 })
 app.post('/cart', function(req,res){
   req.cartItem = products[Math.floor(Math.random()*products.length)];
   cart.push(req.cartItem)
+  res.send(cart);
+})
+
+app.delete('/cart', function(req, res){
+  cart.filter((product) => product.id != req.body.id)
   res.send(cart);
 })
 
