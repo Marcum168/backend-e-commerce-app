@@ -1,62 +1,31 @@
-// import mongoose from 'mongoose'
+
 const express = require("express");
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
+const morgan = require("morgan");
+let jwt = require('jsonwebtoken')
+const {Schema} = mongoose
+const mongoURI = 'mongodb://localhost:27017/test'
+mongoose.connect(mongoURI, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => console.log('mongoDB connected')).catch(err => console.log(err));
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+ console.log('connected!');
+});
+
 const app = express();
 const port = 3001;
 
-// const {db} = mongoose
+app.use(express.json())
+app.use(morgan(':method :url :response-time') )
+const products = new Schema ({
+  name: String,
+  imgurl: String,
+  price: Number,
+  category: String,
+  id: Number,
+  description: String
+})
 
-const products = [
-  {
-    id: 1,
-    name: 'Hisense 4.4-cu ft Freestanding Mini Fridge Freezer Compartment (Black Stainless Steel)',
-    imgurl: 'https://mobileimages.lowes.com/product/converted/819130/819130027166.jpg?size=pdhi',
-    category: 'kitchen-appliances',
-    price: 239.00,
-    description: 'This energy star 4.4 Cu. Ft. Double door black stainless steel look mini fridge is perfect for college dorms, break rooms, or just extra storage for your home and office space. Separate 1.1 cu. Ft. freezer provides storage room for ice cream and frozen meals. The adjustable legs and reversible door design allow for placement of this mini refrigerator virtually anywhere you need it. The sleek and fashionable design does not compromise its functionality. This model has convenient storage shelves on the refrigerator door for 2-Liter bottles as well as extra space for single-serve yogurt or canned beverages. Removable glass shelves provide storage for larger items to efficiently utilize interior capacity. The sliding crisper drawer makes it easy to store your fresh fruits and vegetables.'
-  },
-  {
-    id: 2,
-    name: 'Insignia™ - 0.7 Cu. Ft. Compact Microwave - Black',
-    imgurl:'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6315/6315750_sd.jpg',
-    category: 'kitchen-appliances',
-    price: 54.99,
-    description: 'Cook foods quickly and evenly with this Insignia compact microwave, which features up to 11 power levels for cooking a variety of foods. The weight defrost option eliminates the chance of burning a meal by precisely thawing foods according to their weight. This Insignia compact microwave also includes an internal light, making it easier to judge when cooking is done.'
-  },
-  {
-    id: 3,
-    name: 'Ninja - Ninja® Coffee 12-Cup Coffee Brewer CE251 - Silver',
-    imgurl:'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6357/6357659_sd.jpg;maxHeight=640;maxWidth=550',
-    category: 'kitchen-appliances',
-    price:79.99,
-    description: "Enjoy delicious beverages at your convenience with this Ninja coffee brewer. The 12-cup glass carafe is big enough for a whole day's worth of your favorite brew, and the removable water reservoir supports easy filling. This Ninja coffee brewer features programmable settings, letting you make coffee just the way you like it."
-  },
-  {
-    id: 4,
-    name: 'Toshiba - 32" Class LED HD Smart FireTV Edition TV',
-    imgurl: 'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6398/6398132_sd.jpg;maxHeight=640;maxWidth=550',
-    category: 'entertainment',
-    price: 149.99,
-    description:"Stay entertained with this 32-inch Toshiba Fire TV Edition smart TV. The Wi-Fi connectivity lets you stream your favorite movies and videos, while the HDMI and USB ports offer simple connections to various devices. This Toshiba Fire TV Edition smart TV has a 720p screen resolution, delivering vibrant picture quality."
-  },
-  {
-    id: 5,
-    name: 'Nintendo Switch Console with Neon Blue & Red Joy-Con.',
-    imgurl:"https://i5.walmartimages.com/asr/afdb71df-4810-4e3e-9c3c-187e88a98619_1.9abc0f91d776fcbf0b8b580e875ed6c0.jpeg?odnWidth=612&odnHeight=612&odnBg=ffffff",
-    category: 'entertainment',
-    price: 367.40,
-    description:"It's a Nintendo Switch.  Duh."
-  },
-  {
-    id: 6,
-    name:'Apple - Preowned iPhone X with 256GB Memory Cell Phone (Unlocked) - Silver',
-    imgurl:'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6394/6394666_sd.jpg;maxHeight=640;maxWidth=550',
-    category: 'phones',
-    price:499.99,
-    description:"This thing is probaby outdated already.  I hate Apple."
-  }
-  
-]
 const users = [{
   username: 'BezosAmazon',
   password: 'QanonCabal',
