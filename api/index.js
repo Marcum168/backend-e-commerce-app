@@ -205,9 +205,6 @@ app.delete(`/cart`, (req, res) => {
 //   console.log(`Example app listening at http://localhost:${port}`);
 // });
 
-// app.post("/", (req, res) => {
-//   res.send("Is this post thing working or not?");
-// });
 app.patch("/purchase", (req, res) => {
   let spent = 0;
   for (let i of cart) {
