@@ -1,10 +1,10 @@
-import connectionTest from "../mongoose";
+import connectionTest from "./mongoose";
 const express = require("express");
 const morgan = require("morgan");
 let jwt = require("jsonwebtoken");
 
-import { User } from "../models/usermodel";
-import { Product } from "../models/productmodel";
+import { User } from "./models/usermodel";
+import { Product } from "./models/productmodel";
 let db = require("mongodb");
 const app = express();
 const port = 3001;
