@@ -2,10 +2,14 @@ import connectionTest from "./mongoose";
 const express = require("express");
 const morgan = require("morgan");
 let jwt = require("jsonwebtoken");
+const url =
+  process.env.NODE_ENV === "production"
+    ? "fill in once deplyed"
+    : "http://localhost:3001";
 
 import { User } from "./models/usermodel";
 import { Product } from "./models/productmodel";
-let db = require('mongodb')
+let db = require("mongodb");
 const app = express();
 const port = 3001;
 const mongoose = require("mongoose");
@@ -13,53 +17,45 @@ app.use(express.json());
 app.use(morgan(":method :url :response-time"));
 connectionTest();
 // console.log(Product)
-app.get('/', (req,res) => {
-  
-  Product.find({}, function(err,products){
-
-    if(err){
-      res.send(err)
+app.get("/", (req, res) => {
+  Product.find({}, function (err, products) {
+    if (err) {
+      res.send(err);
       return;
     }
     // res.send(products.map((product) => (product.id)))
-  res.send(products)
-  })
-})
+    res.send(products);
+  });
+});
 
-app.get('/headphones', (req,res) => {
-  Product.find({category: 'Headphones'}, function(err,products){
-
-    if(err){
-      res.send(err)
+app.get("/headphones", (req, res) => {
+  Product.find({ category: "Headphones" }, function (err, products) {
+    if (err) {
+      res.send(err);
       return;
     }
-  res.send(products)
-  })
-
-})
-app.get('/computers', (req,res) => {
-  Product.find({category: 'Computers'}, function(err,products){
-
-    if(err){
-      res.send(err)
+    res.send(products);
+  });
+});
+app.get("/computers", (req, res) => {
+  Product.find({ category: "Computers" }, function (err, products) {
+    if (err) {
+      res.send(err);
       return;
     }
-  res.send(products)
-  })
-
-})
-app.get('/television', (req,res) => {
-  Product.find({category: 'Televisions'}, function(err,products){
-
-    if(err){
-      res.send(err)
+    res.send(products);
+  });
+});
+app.get("/television", (req, res) => {
+  Product.find({ category: "Televisions" }, function (err, products) {
+    if (err) {
+      res.send(err);
       return;
     }
-    
-  res.send(products)
-  })
 
-})
+    res.send(products);
+  });
+});
 app.post("/signUp", (req, res) => {
   const user = new User({
     id: req.body.id,
@@ -74,11 +70,11 @@ app.post("/signUp", (req, res) => {
     }
   });
 });
-app.get('/', (req,res)=>{
-  let userList = user.map(users => users)
-  res.send(userList)
-})
-app.post('/addProducts', (req,res) => {
+app.get("/", (req, res) => {
+  let userList = user.map((users) => users);
+  res.send(userList);
+});
+app.post("/addProduct", (req, res) => {
   const product = new Product({
     id: req.body.id,
     name: req.body.name,
@@ -95,7 +91,6 @@ app.post('/addProducts', (req,res) => {
     }
   });
 });
-
 
 // app.use(async (req, res, next) => {
 //   try {
@@ -159,17 +154,15 @@ let balance = 2000;
 //   res.send(products);
 // });
 app.post("/cart", function (req, res) {
-  Product.find({}, function(err,products){
-
-    if(err){
-      res.send(err)
+  Product.find({}, function (err, products) {
+    if (err) {
+      res.send(err);
       return;
     }
     req.cartItem = products[Math.floor(Math.random() * products.length)];
     cart.push(req.cartItem);
     res.send(cart);
-  })
-  
+  });
 });
 
 // app.delete("/cart", function (req, res) {
@@ -190,30 +183,26 @@ app.post("/cart", function (req, res) {
 //   );
 // });
 app.get(`/:id`, (req, res) => {
-  Product.find({}, function(err,products){
-
-    if(err){
-      res.send(err)
+  Product.find({}, function (err, products) {
+    if (err) {
+      res.send(err);
       return;
     }
     // res.send(products.map((product) => (product.id)))
-    products.filter((product) => product.id === Number(req.params.id))
-res.send(products)
-  })
-  
+    products.filter((product) => product.id === Number(req.params.id));
+    res.send(products);
+  });
 });
 app.delete(`/cart`, (req, res) => {
-  Product.find({}, function(err,products){
-
-    if(err){
-      res.send(err)
+  Product.find({}, function (err, products) {
+    if (err) {
+      res.send(err);
       return;
     }
     // res.send(products.map((product) => (product.id)))
-  products = products.filter((product) => product.id != Number(req.body.id))
-res.send(products)
-  })
-  
+    products = products.filter((product) => product.id != Number(req.body.id));
+    res.send(products);
+  });
 });
 
 // app.listen(port, () => {
