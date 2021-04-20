@@ -7,12 +7,27 @@ import { User } from "./models/usermodel";
 import { Product } from "./models/productmodel";
 let db = require('mongodb')
 const app = express();
-const port = 3001;
+const port = 3000;
 const mongoose = require("mongoose");
 app.use(express.json());
 app.use(morgan(":method :url :response-time"));
 connectionTest();
 // console.log(Product)
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  next();
+
+  //First thing database is going to be full of, is products with image URL's and a title, and a price, description, categories
+});
 app.get('/', (req,res) => {
   
   Product.find({}, function(err,products){
@@ -62,7 +77,7 @@ app.get('/television', (req,res) => {
 })
 app.post("/signUp", (req, res) => {
   const user = new User({
-    id: req.body.id,
+    // id: req.body.id,
     username: req.body.username,
     password: req.body.password, //req.body
   });
@@ -127,21 +142,7 @@ app.post('/addProducts', (req,res) => {
 
 let cart = [];
 let balance = 2000;
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
 
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   res.header(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-//   );
-//   next();
-
-//   //First thing database is going to be full of, is products with image URL's and a title, and a price, description, categories
-// });
 // // let cartItem = function(req,res,next){
 // //   req.cartItem = products[Math.floor(Math.random()*products.length)];
 // //   next();
