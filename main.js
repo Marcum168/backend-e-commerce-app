@@ -6,6 +6,7 @@ const cors = require("cors");
 
 import { User } from "./models/usermodel";
 import { Product } from "./models/productmodel";
+
 let db = require("mongodb");
 const app = express();
 const port = 3001;
@@ -70,18 +71,22 @@ app.get("/television", (req, res) => {
   });
 });
 app.post("/signUp", (req, res) => {
-  const user = new User({
-     id: req.body.id,
-    username: req.body.username,
-    password: req.body.password, //req.body
-  });
-  user.save((err) => {
-    if (err) {
-      return console.log(err);
-    } else {
-      res.send("User Created");
-    }
-  });
+  if (req.body.username && req.body.password) {
+    const user = new User({
+      // id: req.body.id,
+      username: req.body.username,
+      password: req.body.password, //req.body
+    });
+    user.save((err) => {
+      if (err) {
+        return console.log("error:", err);
+      } else {
+        res.send("User Created");
+      }
+    });
+  } else {
+    res.status(404).send("please fill in all missing fields");
+  }
 });
 app.get("/", (req, res) => {
   let userList = user.map((users) => users);
