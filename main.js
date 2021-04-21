@@ -82,6 +82,7 @@ app.post("/signUp", (req, res) => {
     password: req.body.password, //req.body
   });
   user.save((err) => {
+    
     if (err) {
       return console.log(err);
     } else {
@@ -90,8 +91,15 @@ app.post("/signUp", (req, res) => {
   });
 });
 app.get('/', (req,res)=>{
-  let userList = user.map(users => users)
-  res.send(userList)
+User.find({}, function(err,user){
+
+    if(err){
+      res.send(err)
+      return;
+    }
+  res.send(user)
+  })
+  
 })
 app.post('/addProducts', (req,res) => {
   const product = new Product({
@@ -166,12 +174,33 @@ app.post("/cart", function (req, res) {
       res.send(err)
       return;
     }
-    req.cartItem = products[Math.floor(Math.random() * products.length)];
+    req.cartItem = req.body;
     cart.push(req.cartItem);
     res.send(cart);
   })
   
 });
+app.post("/login", function(req,res){
+User.find({username: req.body.username, password: req.body.password}, function(err, user){
+
+  if(err){
+    res.send(err);
+  }
+res.send(user);
+})
+
+
+})
+app.post("/logout", function(req,res){
+  User.find({_id = ""}, function(err, _id){
+
+    if(err){
+      res.send(err);
+    }
+  res.send(_id);
+  })
+
+})
 
 // app.delete("/cart", function (req, res) {
 //   cart.filter((product) => product.id != req.body.id);
