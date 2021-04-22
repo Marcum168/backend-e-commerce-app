@@ -5,6 +5,7 @@ let jwt = require("jsonwebtoken");
 
 import { User } from "./models/usermodel";
 import { Product } from "./models/productmodel";
+
 let db = require('mongodb')
 const app = express();
 const port = 3000;
@@ -148,8 +149,7 @@ app.post('/addProducts', (req,res) => {
 //   { username: "yourMom", password: "motherofyou" },
 // ];
 
-let cart = [];
-let balance = 2000;
+
 
 // // let cartItem = function(req,res,next){
 // //   req.cartItem = products[Math.floor(Math.random()*products.length)];
@@ -167,6 +167,9 @@ let balance = 2000;
 // app.get("/", (req, res) => {
 //   res.send(products);
 // });
+app.get("/cart", function(req,res){
+  res.send(cart)
+})
 app.post("/cart", function (req, res) {
   Product.find({}, function(err,products){
 
@@ -192,7 +195,7 @@ res.send(user);
 
 })
 app.post("/logout", function(req,res){
-  User.find({_id = ""}, function(err, _id){
+  User.find({_id: ""}, function(err, _id){
 
     if(err){
       res.send(err);
@@ -219,19 +222,21 @@ app.post("/logout", function(req,res){
 //     products.filter((product) => product.category === "kitchen-appliances")
 //   );
 // });
-app.get(`/:id`, (req, res) => {
-  Product.find({}, function(err,products){
+// app.get(`/:id`, (req, res) => {
+//   Product.find({}, function(err,products){
 
-    if(err){
-      res.send(err)
-      return;
-    }
+//     if(err){
+//       res.send(err)
+//       return;
+//     }
     // res.send(products.map((product) => (product.id)))
-    products.filter((product) => product.id === Number(req.params.id))
-res.send(products)
-  })
+//     products.filter((product) => product.id === Number(req.params.id))
+// res.send(products)
+//   })
   
-});
+// });
+let cart = [];
+
 app.delete(`/cart`, (req, res) => {
   Product.find({}, function(err,products){
 
