@@ -9,7 +9,7 @@ import { Product } from "./models/productmodel";
 
 let db = require("mongodb");
 const app = express();
-const port = 3001;
+const port = 3000;
 const mongoose = require("mongoose");
 app.use(express.json());
 app.use(morgan(":method :url :response-time"));
@@ -31,6 +31,22 @@ app.use(cors({ origin: true, credentials: true }));
 
 connectionTest();
 // console.log(Product)
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  next();
+
+  //First thing database is going to be full of, is products with image URL's and a title, and a price, description, categories
+});
+
 app.get("/", (req, res) => {
   Product.find({}, function (err, products) {
     if (err) {
@@ -57,6 +73,17 @@ app.get("/computers", (req, res) => {
       res.send(err);
       return;
     }
+
+    res.send(products);
+  });
+});
+app.post("/signUp", (req, res) => {
+  const user = new User({
+    // id: req.body.id,
+    username: req.body.username,
+    password: req.body.password, //req.body
+  });
+  user.save((err) => {
     res.send(products);
   });
 });
@@ -70,6 +97,16 @@ app.get("/television", (req, res) => {
     res.send(products);
   });
 });
+app.get("/", (req, res) => {
+  User.find({}, function (err, user) {
+    if (err) {
+      res.send(err);
+      return;
+    }
+    res.send(user);
+  });
+});
+
 app.post("/signUp", (req, res) => {
   if (req.body.username && req.body.password) {
     const user = new User({
@@ -138,23 +175,6 @@ app.post("/addProducts", (req, res) => {
 //   { username: "yourMom", password: "motherofyou" },
 // ];
 
-let cart = [];
-let balance = 2000;
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   res.header(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-//   );
-//   next();
-
-//   //First thing database is going to be full of, is products with image URL's and a title, and a price, description, categories
-// });
 // // let cartItem = function(req,res,next){
 // //   req.cartItem = products[Math.floor(Math.random()*products.length)];
 // //   next();
@@ -171,15 +191,37 @@ let balance = 2000;
 // app.get("/", (req, res) => {
 //   res.send(products);
 // });
+app.get("/cart", function (req, res) {
+  res.send(cart);
+});
 app.post("/cart", function (req, res) {
   Product.find({}, function (err, products) {
     if (err) {
       res.send(err);
       return;
     }
-    req.cartItem = products[Math.floor(Math.random() * products.length)];
+    req.cartItem = req.body;
     cart.push(req.cartItem);
     res.send(cart);
+  });
+});
+app.post("/login", function (req, res) {
+  User.find(
+    { username: req.body.username, password: req.body.password },
+    function (err, user) {
+      if (err) {
+        res.send(err);
+      }
+      res.send(user);
+    }
+  );
+});
+app.post("/logout", function (req, res) {
+  User.find({ _id: "" }, function (err, _id) {
+    if (err) {
+      res.send(err);
+    }
+    res.send(_id);
   });
 });
 
@@ -200,6 +242,21 @@ app.post("/cart", function (req, res) {
 //     products.filter((product) => product.category === "kitchen-appliances")
 //   );
 // });
+// app.get(`/:id`, (req, res) => {
+//   Product.find({}, function(err,products){
+
+//     if(err){
+//       res.send(err)
+//       return;
+//     }
+// res.send(products.map((product) => (product.id)))
+//     products.filter((product) => product.id === Number(req.params.id))
+// res.send(products)
+//   })
+
+// });
+let cart = [];
+
 app.get(`/:id`, (req, res) => {
   Product.find({}, function (err, products) {
     if (err) {
@@ -249,4 +306,5 @@ app.put("/balance", (req, res) => {
 app.listen(port, function () {
   console.log(`server is running on port ${port}`);
 });
+
 export default app;
