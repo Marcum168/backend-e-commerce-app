@@ -2,6 +2,7 @@ import connectionTest from "./mongoose";
 const express = require("express");
 const morgan = require("morgan");
 let jwt = require("jsonwebtoken");
+const cors = require("cors");
 
 import { User } from "./models/usermodel";
 import { Product } from "./models/productmodel";
@@ -11,6 +12,22 @@ const port = 3001;
 const mongoose = require("mongoose");
 app.use(express.json());
 app.use(morgan(":method :url :response-time"));
+app.use(function (req, res, next) {
+  // Website you wish to allow to connect
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+
+  next();
+});
+app.use(cors({ origin: true, credentials: true }));
+
 connectionTest();
 // console.log(Product)
 app.get("/", (req, res) => {
@@ -54,7 +71,7 @@ app.get("/television", (req, res) => {
 });
 app.post("/signUp", (req, res) => {
   const user = new User({
-    id: req.body.id,
+     id: req.body.id,
     username: req.body.username,
     password: req.body.password, //req.body
   });
