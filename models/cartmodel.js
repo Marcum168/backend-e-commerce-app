@@ -9,4 +9,4 @@ const cartSchema = new mongoose.Schema({
   description: String,
 });
 
-export const Product = mongoose.model("Cart", cartSchema);
+export const Cart = mongoose.model("Cart", cartSchema);
