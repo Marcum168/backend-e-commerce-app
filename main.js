@@ -5,7 +5,7 @@ let jwt = require("jsonwebtoken");
 
 import { User } from "./models/usermodel";
 import { Product } from "./models/productmodel";
-
+import {Cart} from "./models/cartmodel"
 let db = require('mongodb')
 const app = express();
 const port = 3000;
@@ -168,20 +168,27 @@ app.post('/addProducts', (req,res) => {
 //   res.send(products);
 // });
 app.get("/cart", function(req,res){
-  res.send(cart)
-})
-app.post("/cart", function (req, res) {
-  Product.find({}, function(err,products){
+  Cart.find({}, function(err,cart){
 
     if(err){
       res.send(err)
       return;
     }
-    req.cartItem = req.body;
-    cart.push(req.cartItem);
-    res.send(cart);
+    // res.send(products.map((product) => (product.id)))
+  res.send(cart)
   })
-  
+})
+app.post("/cart", function (req, res) {
+ let cart = new Cart ({
+  id: req.body.id,
+  name: req.body.name,
+  imgurl: req.body.imgurl,
+  price: req.body.price,
+  category: req.body.category,
+  description: req.body.description, 
+
+ })
+  res.send(cart)
 });
 app.post("/login", function(req,res){
 User.find({username: req.body.username, password: req.body.password}, function(err, user){
@@ -238,16 +245,17 @@ app.post("/logout", function(req,res){
 let cart = [];
 
 app.delete(`/cart`, (req, res) => {
-  Product.find({}, function(err,products){
+  Cart.find({}, function(err,cart){
 
     if(err){
       res.send(err)
       return;
     }
     // res.send(products.map((product) => (product.id)))
-  products = products.filter((product) => product.id != Number(req.body.id))
-res.send(products)
-  })
+cart.filter((product) => product.id != req.body.id)
+res.send(cart)
+  }
+  )
   
 });
 
